@@ -15,8 +15,11 @@ var weaponRadius = 5;
 var weaponX = (canvas.width)/2 + playerRadius*2;
 var weaponY = (canvas.height)/2 + playerRadius*2;
 
-var x = canvas.width/2;
-var y = canvas.height-30;
+var enemyRadius = 3;
+var enemyX = (canvas.width)/2 + playerRadius*2;
+var enemyY = (canvas.height)/2 + playerRadius*2;
+
+var enemies = [];
 
 document.addEventListener("mousemove", mouseMoveHandler, false);
 
@@ -39,7 +42,9 @@ function drawWeapon() {
     // draw the weapon
     context.beginPath();
     context.arc(weaponX, weaponY, weaponRadius, 0, Math.PI*2);
-    context.fillStyle = "red";
+    context.fillStyle = "white";
+    context.strokeStyle = "black";
+    context.stroke();
     context.fill();
     context.closePath();
 }
@@ -51,6 +56,28 @@ function drawWeaponConnector() {
     context.lineTo(playerX, playerY);
     context.closePath();
     context.stroke();
+}
+
+function drawEnemy(pos) {
+    context.beginPath();
+    context.arc(pos.x, pos.y, enemyRadius, 0, Math.PI*2);
+    context.fillStyle = "red";
+    context.strokeStyle = "gray";
+    context.stroke();
+    context.fill();
+    context.closePath();
+}
+
+function generateEnemies() {
+    var MAX_ENEMIES = 5;
+    for(count = 0; count < MAX_ENEMIES; count++) {
+        drawEnemy(getRandomPos());
+    }
+}
+
+function getRandomPos() {
+    // generate random coordinates
+    return { x: Math.random() * (canvas.width), y: Math.random() * (canvas.height) };
 }
 
 function getMousePos(canvas, evt) {

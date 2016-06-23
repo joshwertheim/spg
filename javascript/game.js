@@ -77,7 +77,17 @@ function getMousePos(canvas, evt) {
 
 function updateEnemyPositions() {
     for(count = 0; count < MAX_ENEMIES; count++) {
+        enemies[count].setPlayer(player);
+        enemies[count].calculateDirectionVectors();
         enemies[count].draw();
+
+        /*
+        if(enemies[count].x == player.x+player.radius || enemies[count].y == player.y+player.radius) {
+            var newPos = getRandomPos();
+            enemies[count].setX(newPos.x);
+            enemies[count].setY(newPos.y);
+        }
+        */
     }
 }
 

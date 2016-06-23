@@ -1,4 +1,4 @@
-class Player {
+class Enemy {
     constructor(x, y, radius, context) {
         this.x = x;
         this.y = y;
@@ -7,10 +7,12 @@ class Player {
     }
 
     draw() {
-        // draw the player
+        // draw the enemy
         context.beginPath();
         context.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-        context.fillStyle = "#0095DD";
+        context.fillStyle = "red";
+        context.strokeStyle = "gray";
+        context.stroke();
         context.fill();
         context.closePath();
     }

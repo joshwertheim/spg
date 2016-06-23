@@ -19,59 +19,36 @@ var enemyRadius = 3;
 var enemyX = (canvas.width)/2 + playerRadius*2;
 var enemyY = (canvas.height)/2 + playerRadius*2;
 
+var player = new Player(playerX, playerY, playerRadius, context);
+var weapon = new Weapon(weaponX, weaponY, weaponRadius, context);
+
 var enemies = [];
 
 document.addEventListener("mousemove", mouseMoveHandler, false);
 
 function mouseMoveHandler(e) {
     var pos = getMousePos(canvas, e);
-    playerX = pos.x;
-    playerY = pos.y;
-}
-
-function drawPlayer() {
-    // draw the player
-    context.beginPath();
-    context.arc(playerX, playerY, playerRadius, 0, Math.PI*2);
-    context.fillStyle = "#0095DD";
-    context.fill();
-    context.closePath();
-}
-
-function drawWeapon() {
-    // draw the weapon
-    context.beginPath();
-    context.arc(weaponX, weaponY, weaponRadius, 0, Math.PI*2);
-    context.fillStyle = "white";
-    context.strokeStyle = "black";
-    context.stroke();
-    context.fill();
-    context.closePath();
+    player.setX(pos.x);
+    player.setY(pos.y);
 }
 
 function drawWeaponConnector() {
     // draw the weapon's attachment
     context.beginPath();
-    context.lineTo(weaponX, weaponY);
-    context.lineTo(playerX, playerY);
+    context.lineTo(weapon.x, weapon.y);
+    context.lineTo(player.x, player.y);
     context.closePath();
     context.stroke();
 }
 
-function drawEnemy(pos) {
-    context.beginPath();
-    context.arc(pos.x, pos.y, enemyRadius, 0, Math.PI*2);
-    context.fillStyle = "red";
-    context.strokeStyle = "gray";
-    context.stroke();
-    context.fill();
-    context.closePath();
-}
+var MAX_ENEMIES = 5;
 
 function generateEnemies() {
-    var MAX_ENEMIES = 5;
     for(count = 0; count < MAX_ENEMIES; count++) {
-        drawEnemy(getRandomPos());
+        var pos = getRandomPos();
+        var enemy = new Enemy(pos.x, pos.y, enemyRadius, context);
+        enemy.draw();
+        enemies.push(enemy);
     }
 }
 
@@ -82,18 +59,38 @@ function getRandomPos() {
 
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
-    return {
-      x: evt.clientX - rect.left,
-      y: evt.clientY - rect.top
-    };
+    var curr_x = evt.clientX - rect.left;
+    if(curr_x < 0) {
+        curr_x = 0;
+    } else if(curr_x > rect.width) {
+        curr_x = rect.width;
+    }
+    var curr_y = evt.clientY - rect.top;
+    if(curr_y < 0) {
+        curr_y = 0;
+    } else if(curr_y > rect.height) {
+        curr_y = rect.height;
+    }
+    
+    return { x: curr_x, y: curr_y };
+}
+
+function updateEnemyPositions() {
+    for(count = 0; count < MAX_ENEMIES; count++) {
+        enemies[count].draw();
+    }
 }
 
 function draw() {
-    // drawing code
+    // update canvas loop
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawWeaponConnector();
-    drawWeapon();
-    drawPlayer();
+    player.draw();
+    weapon.draw();
+    if(enemies.length < MAX_ENEMIES) {
+        generateEnemies();
+    }
+    updateEnemyPositions();
     requestAnimationFrame(draw);
 }
 draw();

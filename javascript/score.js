@@ -5,12 +5,6 @@ class Score {
     }
 
     draw() {
-        // var 
-        // context.leftAlign = 'left';
-        // context.font = '12px Orbitron';
-        // context.fillStyle = '#000000';
-        // context.fillText("Score: ");
-
         context.font = '16px Orbitron';
         context.fillText(this.getCurrentScore(), 10, 20);
     }

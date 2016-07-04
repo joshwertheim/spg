@@ -22,6 +22,8 @@ var enemyY = (canvas.height)/2 + playerRadius*2;
 var player = new Player(playerX, playerY, playerRadius, context);
 var weapon = new Weapon(weaponX, weaponY, weaponRadius, context);
 
+var scoreboard = new Score(context);
+
 var enemies = [];
 
 document.addEventListener("mousemove", mouseMoveHandler, false);
@@ -77,17 +79,24 @@ function getMousePos(canvas, evt) {
 
 function updateEnemyPositions() {
     for(count = 0; count < MAX_ENEMIES; count++) {
-        enemies[count].setPlayer(player);
-        enemies[count].calculateDirectionVectors();
-        enemies[count].draw();
+        var e = enemies[count];
+        e.setPlayer(player);
+        e.calculateDirectionVectors();
+        e.draw();
 
-        /*
-        if(enemies[count].x == player.x+player.radius || enemies[count].y == player.y+player.radius) {
-            var newPos = getRandomPos();
-            enemies[count].setX(newPos.x);
-            enemies[count].setY(newPos.y);
+        if(e.x < player.x+player.radius && e.x > player.x-player.radius && e.y < player.y+player.radius && e.y > player.y-player.radius) {
+            var pos = getRandomPos();
+            e.setX(pos.x);
+            e.setY(pos.y);
+            scoreboard.decrement(1);
         }
-        */
+
+        if(e.x < weapon.x+weapon.radius && e.x > weapon.x-weapon.radius && e.y < weapon.y+weapon.radius && e.y > weapon.y-weapon.radius) {
+            var pos = getRandomPos();
+            e.setX(pos.x);
+            e.setY(pos.y);
+            scoreboard.increment(1);
+        }
     }
 }
 
@@ -101,6 +110,7 @@ function draw() {
         generateEnemies();
     }
     updateEnemyPositions();
+    scoreboard.draw();
     requestAnimationFrame(draw);
 }
 draw();
